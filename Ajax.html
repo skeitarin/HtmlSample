@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta charset="utf-8">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+
+<script type="text/javascript">
+$(function(){
+	var domainAzure = 'http://scm1test.azurewebsites.net';
+	var domainLocal = 'http://localhost:49189';
+
+	$('#AjaxGet').on('click', function(){
+		ajaxGet(domainAzure);
+	});
+	
+	
+	$('#AjaxPost').on('click', function(){
+		ajaxPost(domainAzure);
+	});
+	
+	$('#AjaxGetDebug').on('click', function(){
+		ajaxGet(domainLocal);
+	});
+	
+	
+	$('#AjaxPostDebug').on('click', function(){
+		ajaxPost(domainLocal);
+	});
+	
+	var ajaxGet = function(domain){
+		console.log('** START **');
+		console.log('DOMAIN : ' + domain);
+		$.ajax({
+			type: 'GET',
+			url: domain + '/api/emp?searchempno=46012',
+			datatype: 'jsonp',
+		}).done(function(data){
+			handleDone(data);
+		}).fail(function(XMLHttpRequest, textStatus, errorThrown){
+			handleFail(XMLHttpRequest, textStatus, errorThrown);
+		}).always(function(){
+			console.log('** END **');
+		});
+	}
+	
+	var ajaxPost = function(domain){
+		console.log('DOMAIN : ' + domain);
+		var param = {
+			EmpNo: "46012",
+			Password: "46012"
+		};
+		
+		$.ajax({
+			type: 'POST',
+			//url: domain + '/api/emp/testjson',
+			//url: domain + '/api/emp/InspectToken',
+			url: domain + '/api/auth',
+			data: JSON.stringify(param),
+			contentType: 'application/json', 
+			datatype: 'json',
+		}).done(function(data){
+			handleDone(data);
+		}).fail(function(XMLHttpRequest, textStatus, errorThrown){
+			handleFail(XMLHttpRequest, textStatus, errorThrown);
+		}).always(function(){
+			console.log('** END **');
+		});
+	}
+	
+	var handleDone = function(data){
+		//alert('SUCCESS : ' + JSON.stringify(data));
+		console.log('SUCCESS : ' + JSON.stringify(data));
+	};
+	var handleFail = function(XMLHttpRequest, textStatus, errorThrown){
+		//alert('ERROR : ' + XMLHttpRequest.status + ' / ' + textStatus + ' / ' + errorThrown.message);
+		console.error('ERROR : ' + XMLHttpRequest.status + ' / ' + textStatus + ' / ' + errorThrown.message);
+	};
+});
+</script>
+
+<body>
+    <input type= "button" id="AjaxGet" value="AjaxGet">
+    <input type= "button" id="AjaxPost" value="AjaxPost"><br />
+    <input type= "button" id="AjaxGetDebug" value="AjaxGet_Debug">
+    <input type= "button" id="AjaxPostDebug" value="AjaxPost_Debug">
+</body>
+
+</html>
